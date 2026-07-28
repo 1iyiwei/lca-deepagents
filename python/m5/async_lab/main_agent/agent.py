@@ -26,10 +26,13 @@ async_subagents = [
     AsyncSubAgent(
         name="analyst",
         description=(
-            "Runs sales analysis grouped by region or by product. Slow (it's a "
-            "heavyweight pandas job), so it lives on its own deployment instead "
-            "of running in-process here. Launch one task per grouping if you "
-            "need both."
+            "Runs sales analysis grouped by region or by product, returning total "
+            "revenue and units sold per group, ranked by revenue - that's all the "
+            "data available, so don't ask it for anything else (e.g. average "
+            "transaction value, transaction counts, or growth metrics). Slow (it's "
+            "a heavyweight pandas job), so it lives on its own deployment instead "
+            "of running in-process here. Launch one task per grouping if you need "
+            "both."
         ),
         graph_id="agent",
         url="http://127.0.0.1:2025",
