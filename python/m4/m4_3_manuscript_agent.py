@@ -71,7 +71,7 @@ manuscript_permissions = [
 
 agent = create_deep_agent(
     model=strong_model,
-    middleware=[CodeInterpreterMiddleware()],
+    middleware=[CodeInterpreterMiddleware(ptc=["read_file", "grep"])],
     system_prompt=MANUSCRIPT_PROMPT,
     subagents=[book_scanner],
     backend=FilesystemBackend(root_dir=DATA_DIR, virtual_mode=True),
