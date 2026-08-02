@@ -3,7 +3,7 @@ requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
-py-modules = ["models", "env_utils"]
+py-modules = ["models", "env_utils", "my_utils"]
 
 [project]
 name = "lca-deepagents-python"
