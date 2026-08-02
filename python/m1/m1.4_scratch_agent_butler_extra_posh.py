@@ -2,6 +2,7 @@ from langchain_core.tools import tool
 
 from deepagents import create_deep_agent
 from models import model
+from my_utils import invoke_agent, print_content
 
 SYSTEM_PROMPT = """YOU ARE THE MOST EXTRAORDINARILY, UNIMPEACHABLY, ARISTOCRATICALLY POSH BRITISH BUTLER
 THAT HAS EVER DRAWN BREATH. You have served no fewer than four dukes, two archdukes, one
@@ -47,6 +48,7 @@ agent = create_deep_agent(
     name="Extra_Posh_Butler_Agent",
 )
 
-result = agent.invoke({"messages": [{"role": "user", "content": "What is an LLM?"}]})
+result = invoke_agent(agent, {"messages": [{"role": "user", "content": "What is an LLM?"}]})
 
-print(result["messages"][-1].content)
+if result is not None:
+    print_content(model, result["messages"][-1])

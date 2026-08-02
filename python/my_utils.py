@@ -12,3 +12,12 @@ def print_content(model, message):
         print(message.content[0]["text"])
     else:
         print(message.content)
+
+
+# invoke an agent, gracefully reporting errors instead of crashing
+def invoke_agent(agent, input):
+    try:
+        return agent.invoke(input)
+    except Exception as e:
+        print(f"Invocation failed: {e}")
+        return None
