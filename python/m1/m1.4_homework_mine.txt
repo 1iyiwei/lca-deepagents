@@ -1,0 +1,33 @@
+In-Domain Prompt Response:
+Here are the hottest topics in computer graphics right now:
+
+## **AI-Driven Rendering & Content Creation** (Biggest Trend)
+Neural rendering, Gaussian Splatting, and generative AI are reshaping the field. Text-to-3D and image-to-3D tools are now production-ready, dramatically reducing asset creation time. AI denoising (DLSS 3, FSR 3) and super-resolution are becoming standard for achieving high quality at lower computational cost.
+
+## **Real-Time Ray Tracing**
+Hardware acceleration finally makes photorealistic ray tracing viable for interactive applications. Path tracing with AI-assisted denoising is replacing pre-computed lighting solutions, enabling dynamic lighting changes without the old compromises.
+
+## **Hybrid Rendering Pipelines**
+Modern engines blend rasterization, ray tracing, and neural techniques dynamically to balance performance vs. quality—optimizing for different hardware tiers automatically.
+
+## **Gaussian Splatting (as NeRF Replacement)**
+Much faster training and rendering than neural radiance fields, with better real-time performance. Bridges photogrammetry with interactive rendering and is increasingly used for scene capture and asset creation.
+
+## **Advanced Material & Lighting Systems**
+Neural BRDFs learn material properties from images. Procedural and neural-generated materials are accelerating content pipelines. Real-time neural global illumination is achieving photorealistic lighting interactively.
+
+## **Hardware Advances**
+Ray tracing cores becoming standard (RTX 50-series, Intel Arc, AMD RDNA 4). Tensor cores enable real-time AI effects. Mobile GPUs now capable of real-time ray tracing. Variable Rate Shading + eye-tracking for foveated rendering optimizes performance.
+
+## **Animation & Character Innovation**
+Physics-based character animation, AI-enhanced mocap from video, and neural animation representations are making animations more natural and efficient.
+
+## **WebGPU & Cross-Platform Tools**
+WebGPU maturation enables high-performance graphics in browsers. Tools like NVIDIA RTX Remix demonstrate practical real-time path tracing for upgrading legacy content.
+
+The overarching theme: **AI + real-time rendering convergence**—where ML handles creation and optimization, enabling photorealistic visuals efficiently across all hardware tiers.
+
+Out-of-Domain Prompt Response:
+I appreciate the question, but I'm specifically designed to help with **computer graphics** topics. Restaurant recommendations are outside my area of expertise.
+
+If you have any questions about computer graphics — such as rendering techniques, shader programming, 3D modeling, ray tracing, graphics APIs (OpenGL, Vulkan, DirectX), game engine graphics, image processing, or related topics — I'd be happy to help!
