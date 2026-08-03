@@ -8,6 +8,7 @@ from langchain_community.utilities import SQLDatabase
 from langchain_core.tools import tool
 
 from models import model
+from my_utils import print_content
 
 DB_PATH = Path(__file__).parent / "chinook.db"
 db = SQLDatabase.from_uri(f"sqlite:///{DB_PATH}")
@@ -42,4 +43,5 @@ result = agent.invoke(
     {"messages": [{"role": "user", "content": "Which five genres have the most tracks?"}]}
 )
 
-print(result["messages"][-1].content)
+print(result["messages"][-1].content) # the SQL from Gemini will actually show up in a separate part of the returned json structure
+#print_content(model, result["messages"][-1])
