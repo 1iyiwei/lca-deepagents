@@ -4,7 +4,7 @@ from deepagents import create_deep_agent
 from langchain_mcp_adapters.client import MultiServerMCPClient
 
 from models import model
-
+from my_utils import print_content
 
 async def main():
     client = MultiServerMCPClient({
@@ -33,7 +33,7 @@ async def main():
     result = await agent.ainvoke({
         "messages": [{"role": "user", "content": "Use the LangChain docs MCP tool to explain what MCP is and how LangChain uses MCP tools."}]
     })
-    print(result["messages"][-1].content)
+    print_content(model, result["messages"][-1])
 
 
 asyncio.run(main())
