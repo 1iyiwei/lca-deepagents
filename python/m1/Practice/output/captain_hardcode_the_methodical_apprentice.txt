@@ -1,0 +1,36 @@
+
+                    ______
+                 .-"      "-.
+                /            \
+    _          |              |          _
+   ( \         |,  .-.  .-.  ,|         / )
+    > "=._     | )(__/  \__)( |     _.=" <
+   (_/"=._"=._ |/     /\     \| _.="_.="\_)
+          "=._"(_     ^^     _)"_.="
+              "=\__|IIIIII|__/="
+             _.="| \IIIIII/ |"=._
+   _     _.="_.="\          /"=._"=._     _
+  ( \_.="_.="     `--------`     "=._"=._/ )
+   > _.="                            "=._ <
+  (_/                                    \_)
+
+  ┌─────────────────────────────┐
+  │  THE METHODICAL APPRENTICE  │
+  └─────────────────────────────┘
+
+  Chaotic  [███████░░░░░░░] Organized
+  ───────────────────────────────────────
+  Cautious [███████░░░░░░░] Bold
+  ───────────────────────────────────────
+  Solo     [███████░░░░░░░] Collaborative
+
+  "Evaluation be yer match, matey, fer it be a
+  structured approach to identify failures and
+  compare versions to build more reliable AI
+  applications, which suits a balanced
+  developer who weighs every decision like
+  cargo upon the scales."
+
+  judged by Captain Hardcode
+
+  matched product: Evaluation
