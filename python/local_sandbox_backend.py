@@ -1,8 +1,8 @@
 """Shared coding-agent backend construction for the m2.3 sandbox scripts.
 
-LangSmith's hosted sandbox requires a premium subscription. Set
-LCA_BACKEND=langsmith to use it instead of the local backend (default, no
-subscription needed, runs directly on this machine).
+LangSmith's hosted sandbox requires a premium subscription.
+Set LCA_BACKEND=langsmith to use it instead of the local backend
+(default, no subscription needed, runs directly on this machine).
 """
 
 import os
@@ -34,15 +34,16 @@ def create_backend(name_prefix: str):
     """Create a coding-agent backend and its cleanup callback.
 
     Args:
-        name_prefix: Used to name the sandbox (LangSmith) or the temp
-            directory (local) so multiple scripts don't collide.
+        name_prefix: Used to name the sandbox (LangSmith) or
+        the temp directory (local) so multiple scripts don't collide.
 
     Returns:
-        `(backend, cleanup)`. `backend` implements deepagents'
+        `(backend, cleanup)`.
+        `backend` implements deepagents'
         `SandboxBackendProtocol` (`execute`/`read`/`write`/`upload_files`/
-        `download_files`/...), the same interface for either choice. Always
-        call `cleanup()` when done: it deletes the LangSmith sandbox or the
-        local temp dir, so download anything you need to keep first.
+        `download_files`/...), the same interface for either choice.
+        Always call `cleanup()` when done: it deletes the LangSmith sandbox
+        or the local temp dir, so download anything you need to keep first.
     """
     if USE_LANGSMITH_SANDBOX:
         from deepagents.backends.langsmith import LangSmithSandbox
