@@ -30,12 +30,10 @@ RUN
 """
 
 from pathlib import Path
-from uuid import uuid4
 
 from deepagents import create_deep_agent
-from deepagents.backends.langsmith import LangSmithSandbox
-from langsmith.sandbox import SandboxClient
 
+from local_sandbox_backend import create_backend, sandbox_path
 from models import model
 
 # ════════════════════════════════════════════════════════════════════════
@@ -62,17 +60,31 @@ SYSTEM_PROMPT = None  # TODO 1: replace with your own system prompt
 
 
 # ════════════════════════════════════════════════════════════════════════
+# TODO 3 (filled in first: TASK_TWO below needs it): Pick a sandbox path
+# for the chart.
+#
+# Use `sandbox_path("name.png")` rather than hardcoding "/name.png" - it
+# returns a path that works with whichever backend `local_sandbox_backend`
+# picked (LangSmith's sandbox needs an absolute "/name.png"; the local
+# backend needs a relative "name.png", since code it runs isn't sandboxed
+# to a virtual root the way file reads/writes are - see
+# local_sandbox_backend.py for why).
+# ════════════════════════════════════════════════════════════════════════
+
+CHART_PATH = None  # TODO 3: e.g. sandbox_path("chart.png")
+
+
+# ════════════════════════════════════════════════════════════════════════
 # TODO 2: Write two tasks that share the sandbox's state.
 #
 # TASK_ONE: have the agent generate or compute some numeric data (made up
 #   or calculated) and save it to a file.
 # TASK_TWO: a SEPARATE request, sent afterward to the same agent, that
 #   reads TASK_ONE's file (without regenerating the data) and uses
-#   matplotlib to chart it, saving the image to a path you pick and
-#   state explicitly (e.g. "save the chart to /chart.png"), so TODO 3
-#   can read it back. Don't have TASK_TWO regenerate the data itself,
-#   that would work even without a persistent sandbox and wouldn't prove
-#   anything.
+#   matplotlib to chart it, saving the image to CHART_PATH (the path you
+#   just picked above) - tell the agent that path explicitly. Don't have
+#   TASK_TWO regenerate the data itself, that would work even without a
+#   persistent sandbox and wouldn't prove anything.
 #
 # Example (delete this and write your own):
 #   TASK_ONE = (
@@ -81,23 +93,12 @@ SYSTEM_PROMPT = None  # TODO 1: replace with your own system prompt
 #   )
 #   TASK_TWO = (
 #       "Read rainfall.json (don't regenerate the numbers) and create a "
-#       "bar chart of monthly rainfall. Save it to /chart.png."
+#       f"bar chart of monthly rainfall. Save it to {CHART_PATH}."
 #   )
 # ════════════════════════════════════════════════════════════════════════
 
 TASK_ONE = None  # TODO 2: replace with your first task message
 TASK_TWO = None  # TODO 2: replace with a second task that charts TASK_ONE's file
-
-
-# ════════════════════════════════════════════════════════════════════════
-# TODO 3: Point CHART_PATH at wherever TASK_TWO saves the chart.
-#
-# This must match the exact sandbox path you told the agent to use in
-# TASK_TWO. It's used below to read the chart back from the sandbox and
-# save it locally, the same way Lab 2 reads /genre_revenue.png back.
-# ════════════════════════════════════════════════════════════════════════
-
-CHART_PATH = None  # TODO 3: replace with the sandbox path used in TASK_TWO
 
 if SYSTEM_PROMPT is None:
     raise NotImplementedError("TODO 1: see the comment block above")
@@ -106,10 +107,7 @@ if TASK_ONE is None or TASK_TWO is None:
 if CHART_PATH is None:
     raise NotImplementedError("TODO 3: see the comment block above")
 
-client = SandboxClient()
-ls_sandbox = client.create_sandbox(name=f"lca-deepagents-homework-{uuid4().hex[:8]}")
-print(f"Sandbox: {ls_sandbox.name}  (id: {ls_sandbox.id})")
-backend = LangSmithSandbox(sandbox=ls_sandbox)
+backend, cleanup = create_backend("lca-deepagents-homework")
 
 agent = create_deep_agent(
     model=model,
@@ -126,9 +124,11 @@ try:
     print("\n--- Task 2 (same sandbox, should see Task 1's file) ---")
     print(result["messages"][-1].content)
 
-    chart_bytes = ls_sandbox.read(CHART_PATH)
+    [download] = backend.download_files([CHART_PATH])
+    if download.error:
+        raise RuntimeError(f"Failed to download {CHART_PATH}: {download.error}")
     out_path = Path(__file__).parent / "homework_chart.png"
-    out_path.write_bytes(chart_bytes)
+    out_path.write_bytes(download.content)
     print(f"Chart saved to {out_path}")
 finally:
-    client.delete_sandbox(ls_sandbox.name)
+    cleanup()

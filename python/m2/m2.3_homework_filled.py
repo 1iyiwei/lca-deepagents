@@ -4,12 +4,10 @@ can run it end to end and see what "done" looks like. This is just one
 possible answer, so yours might be different. Explore!"""
 
 from pathlib import Path
-from uuid import uuid4
 
 from deepagents import create_deep_agent
-from deepagents.backends.langsmith import LangSmithSandbox
-from langsmith.sandbox import SandboxClient
 
+from local_sandbox_backend import create_backend, sandbox_path
 from models import model
 
 # TODO 1 filled in
@@ -20,6 +18,9 @@ SYSTEM_PROMPT = (
     "a chart, use matplotlib and save it as a .png file."
 )
 
+# TODO 3 filled in (moved up: TASK_TWO references it)
+CHART_PATH = sandbox_path("chart.png")
+
 # TODO 2 filled in
 TASK_ONE = (
     "Generate 12 months of made-up monthly rainfall totals (in mm) for "
@@ -27,16 +28,10 @@ TASK_ONE = (
 )
 TASK_TWO = (
     "Read rainfall.json (don't regenerate the numbers) and create a bar "
-    "chart of monthly rainfall. Save it to /chart.png."
+    f"chart of monthly rainfall. Save it to {CHART_PATH}."
 )
 
-# TODO 3 filled in
-CHART_PATH = "/chart.png"
-
-client = SandboxClient()
-ls_sandbox = client.create_sandbox(name=f"lca-deepagents-homework-{uuid4().hex[:8]}")
-print(f"Sandbox: {ls_sandbox.name}  (id: {ls_sandbox.id})")
-backend = LangSmithSandbox(sandbox=ls_sandbox)
+backend, cleanup = create_backend("lca-deepagents-homework")
 
 agent = create_deep_agent(
     model=model,
@@ -53,9 +48,11 @@ try:
     print("\n--- Task 2 (same sandbox, should see Task 1's file) ---")
     print(result["messages"][-1].content)
 
-    chart_bytes = ls_sandbox.read(CHART_PATH)
+    [download] = backend.download_files([CHART_PATH])
+    if download.error:
+        raise RuntimeError(f"Failed to download {CHART_PATH}: {download.error}")
     out_path = Path(__file__).parent / "homework_chart.png"
-    out_path.write_bytes(chart_bytes)
+    out_path.write_bytes(download.content)
     print(f"Chart saved to {out_path}")
 finally:
-    client.delete_sandbox(ls_sandbox.name)
+    cleanup()
