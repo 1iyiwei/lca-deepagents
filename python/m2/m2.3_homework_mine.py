@@ -56,7 +56,13 @@ from models import model
 #   )
 # ════════════════════════════════════════════════════════════════════════
 
-SYSTEM_PROMPT = None  # TODO 1: replace with your own system prompt
+SYSTEM_PROMPT = """
+You are a data visualization artist trained by Edward Tufte.
+When asked to run code, write it to a file first, and then execute it.
+If necessary, install any packages you need with pip,
+before importing them into your code.
+When asked for a chart, use matplotlib and save the result to a png file.
+"""
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -71,7 +77,8 @@ SYSTEM_PROMPT = None  # TODO 1: replace with your own system prompt
 # local_sandbox_backend.py for why).
 # ════════════════════════════════════════════════════════════════════════
 
-CHART_PATH = None  # TODO 3: e.g. sandbox_path("chart.png")
+HOMEWORK_CHART = "homework_chart.png"
+CHART_PATH = sandbox_path(HOMEWORK_CHART)
 
 
 # ════════════════════════════════════════════════════════════════════════
@@ -97,8 +104,18 @@ CHART_PATH = None  # TODO 3: e.g. sandbox_path("chart.png")
 #   )
 # ════════════════════════════════════════════════════════════════════════
 
-TASK_ONE = None  # TODO 2: replace with your first task message
-TASK_TWO = None  # TODO 2: replace with a second task that charts TASK_ONE's file
+DATA_FILE = sandbox_path("data.json")
+TASK_ONE = f"""
+Collect the 10 hottest topics in computer science and give each topic a numerical score.
+You can decide how to generate this statistics, as long as it is not too expensive
+(in terms of computation or web search). Save the result to {DATA_FILE}.
+"""
+
+TASK_TWO = f"""
+Read {DATA_FILE} and create a chart to visualize it. Do not regenerate the data.
+You can use any chart type you think is most suitable, and explain your decision.
+Save the result to {CHART_PATH}.
+"""
 
 if SYSTEM_PROMPT is None:
     raise NotImplementedError("TODO 1: see the comment block above")
@@ -127,7 +144,7 @@ try:
     [download] = backend.download_files([CHART_PATH])
     if download.error:
         raise RuntimeError(f"Failed to download {CHART_PATH}: {download.error}")
-    out_path = Path(__file__).parent / "homework_chart.png"
+    out_path = Path(__file__).parent / HOMEWORK_CHART
     out_path.write_bytes(download.content)
     print(f"Chart saved to {out_path}")
 finally:

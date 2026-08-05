@@ -1,22 +1,18 @@
 from pathlib import Path
-from uuid import uuid4
 
 from deepagents import create_deep_agent
-from deepagents.backends.langsmith import LangSmithSandbox
-from langsmith.sandbox import SandboxClient
 
+from local_sandbox_backend import create_backend, sandbox_path
 from models import model
 
 DB_PATH = Path(__file__).resolve().parent / "chinook.db"
+DB_SANDBOX_PATH = sandbox_path("chinook.db")
+CHART_SANDBOX_PATH = sandbox_path("genre_revenue.png")
 
-client = SandboxClient()
-ls_sandbox = client.create_sandbox(name=f"lca-deepagents-lab-{uuid4().hex[:8]}")
-print(f"Sandbox: {ls_sandbox.name}  (id: {ls_sandbox.id})")
-
-backend = LangSmithSandbox(sandbox=ls_sandbox)
+backend, cleanup = create_backend("lca-deepagents-lab")
 
 with open(DB_PATH, "rb") as f:
-    upload_results = backend.upload_files([("/chinook.db", f.read())])
+    upload_results = backend.upload_files([(DB_SANDBOX_PATH, f.read())])
 
 for upload_result in upload_results:
     if upload_result.error:
@@ -26,11 +22,11 @@ agent = create_deep_agent(
     model=model,
     backend=backend,
     system_prompt=(
-        "You are a sales data analyst with access to the Chinook music store database "
-        "at /chinook.db. Use sqlite3 and matplotlib to answer questions with charts. "
-        "Install any packages you need with pip before importing them. "
-        "When asked to produce a chart, write a Python script, execute it, and confirm "
-        "the output file was created."
+        f"You are a sales data analyst with access to the Chinook music store database "
+        f"at {DB_SANDBOX_PATH}. Use sqlite3 and matplotlib to answer questions with charts. "
+        f"Install any packages you need with pip before importing them. "
+        f"When asked to produce a chart, write a Python script, execute it, and confirm "
+        f"the output file was created."
     ),
 )
 
@@ -41,7 +37,7 @@ try:
                 {
                     "role": "user",
                     "content": (
-                        "Query the Chinook database at /chinook.db to get total revenue "
+                        f"Query the Chinook database at {DB_SANDBOX_PATH} to get total revenue "
                         "by genre. Create a clean donut chart showing each genre's share "
                         "of total sales revenue. Group any genres that individually "
                         "account for less than 3% of total revenue into a single 'Other' "
@@ -49,7 +45,7 @@ try:
                         "Use a visually distinct color palette, leave a white center hole, "
                         "and make sure no labels overlap with each other or with the title. "
                         "Add enough top padding so the title is fully visible. "
-                        "Save the chart to /genre_revenue.png."
+                        f"Save the chart to {CHART_SANDBOX_PATH}."
                     ),
                 }
             ]
@@ -57,10 +53,12 @@ try:
     )
     print(result["messages"][-1].content)
 
-    png_bytes = ls_sandbox.read("/genre_revenue.png")
+    [download] = backend.download_files([CHART_SANDBOX_PATH])
+    if download.error:
+        raise RuntimeError(f"Failed to download {download.path}: {download.error}")
     out_path = Path(__file__).parent / "genre_revenue.png"
-    out_path.write_bytes(png_bytes)
+    out_path.write_bytes(download.content)
     print(f"Chart saved to {out_path}")
 
 finally:
-    client.delete_sandbox(ls_sandbox.name)
+    cleanup()
