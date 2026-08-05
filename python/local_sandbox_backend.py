@@ -6,6 +6,7 @@ subscription needed, runs directly on this machine).
 """
 
 import os
+import shutil
 import tempfile
 from uuid import uuid4
 
@@ -40,8 +41,8 @@ def create_backend(name_prefix: str):
         `(backend, cleanup)`. `backend` implements deepagents'
         `SandboxBackendProtocol` (`execute`/`read`/`write`/`upload_files`/
         `download_files`/...), the same interface for either choice. Always
-        call `cleanup()` when done, even for the local backend (a no-op
-        there).
+        call `cleanup()` when done: it deletes the LangSmith sandbox or the
+        local temp dir, so download anything you need to keep first.
     """
     if USE_LANGSMITH_SANDBOX:
         from deepagents.backends.langsmith import LangSmithSandbox
@@ -66,4 +67,4 @@ def create_backend(name_prefix: str):
     tmp_dir = tempfile.mkdtemp(prefix=f"{name_prefix}-")
     print(f"Local backend: {tmp_dir}")
     backend = LocalShellBackend(root_dir=tmp_dir, virtual_mode=True, inherit_env=True)
-    return backend, lambda: None
+    return backend, lambda: shutil.rmtree(tmp_dir, ignore_errors=True)
