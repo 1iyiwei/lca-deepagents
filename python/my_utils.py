@@ -8,7 +8,10 @@ def get_provider(model):
 
 def get_content(model, message):
     if get_provider(model) == "google_genai":
-        return message.content[0]["text"]
+        try:
+            return message.content[0]["text"]
+        except TypeError:
+            return message.content
     else:
         return message.content
 
