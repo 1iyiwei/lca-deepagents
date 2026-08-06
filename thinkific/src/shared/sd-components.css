@@ -245,6 +245,53 @@ details[open].video-walkthrough > summary { border-bottom-color: #F4ABCD; }
 /* ── Tip box: remove bottom margin on last paragraph ── */
 .tip p:last-child { margin-bottom: 0; }
 
+/* ── Code tabs (block-switch: language choice scoped to one code block) ── */
+.code-tabs {
+  position: relative;
+  margin: 1rem 0 1.5rem;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #030710;
+}
+
+/* Same top offset and height as .copy-button-inline so both sit inline,
+   left and right, in the reserved top band of the code block (see pre { padding-top }). */
+.code-tab-list {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.9rem;
+  height: 28px;
+  z-index: 2;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.code-tab {
+  font: 500 12px 'IBM Plex Mono', monospace;
+  padding: 0 0 4px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: #B8D4FF;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+}
+
+.code-tab:hover { color: #F2FAFF; }
+
+.code-tab.active {
+  color: #F2FAFF;
+  border-bottom-color: #7FC8FF;
+}
+
+.code-tab-panel { display: none; }
+.code-tab-panel.active { display: block; }
+.code-tab-panel pre {
+  margin: 0;
+  border-radius: 8px;
+}
+
 /* ── Code-block copy button: always-visible icon, never overlapping the code ── */
 /* Extra top padding reserves a band for the button so the first line stays clear. */
 pre { padding-top: 2.85rem; }
@@ -267,6 +314,56 @@ pre .copy-button-inline:hover {
   filter: none;
   opacity: 1;
   background-color: rgba(127, 200, 255, 0.30);
+}
+
+/* ── Page-level language switch (page-switch: scope is the whole lesson) ──
+   Fixed full-width bar pinned to the top of the viewport, auto-hides on
+   scroll-down and reappears on scroll-up — matches the reliable-agents
+   LanguageSelector look exactly (colors, shape, layout included). Also acts
+   as the single global toggle — see sd-components.js — so it stays in sync
+   with any .code-tabs (block-switch) blocks on the same page. A JS-measured
+   spacer (inserted right after this element) reserves its height so content
+   doesn't jump when it goes fixed. */
+.page-lang-switch {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 1rem 0;
+  background: #ffffff;
+  border-bottom: 2px solid #e5e7eb;
+  border-radius: 0;
+  box-shadow: none;
+  transition: transform 0.3s ease-in-out;
+}
+
+.page-lang-switch.pls-hidden {
+  transform: translateY(-100%);
+}
+
+.page-lang-btn {
+  padding: 0.5rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  background: #fafafa;
+  color: #6b7280;
+  font: 600 0.9375rem/1.2 -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: normal;
+  text-transform: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.page-lang-btn:hover { color: #1f2937; }
+
+.page-lang-btn.active {
+  background: #d1d5db;
+  color: #1f2937;
 }
 
 /* ── Back to Top button ── */
