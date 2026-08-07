@@ -43,5 +43,5 @@ result = agent.invoke(
     {"messages": [{"role": "user", "content": "Which five genres have the most tracks?"}]}
 )
 
-print(result["messages"][-1].content) # the SQL from Gemini will actually show up in a separate part of the returned json structure
-#print_content(model, result["messages"][-1])
+#print(result["messages"][-1].content) # the SQL from Gemini will actually show up in a separate part of the returned json structure
+print_content(model, result["messages"][-1])
