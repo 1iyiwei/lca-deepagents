@@ -27,11 +27,8 @@ def get_content(model, message):
     if get_provider(model) == "google_genai":
         try:
             return message.content[0][text_key]
-        except TypeError:
-            try:
-                return _find_shallowest_text(message.content, text_key)
-            except Exception:
-                return message.content
+        except Exception:
+            return message.content
     else:
         return message.content
 
