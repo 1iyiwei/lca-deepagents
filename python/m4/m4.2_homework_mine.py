@@ -32,6 +32,7 @@ RUN
 from deepagents import FilesystemPermission, create_deep_agent
 
 from models import model, strong_model
+from my_utils import print_content
 
 SCRATCH_ROOT = "/scratch"
 
@@ -67,6 +68,7 @@ def build_subagents(specs: list[dict]) -> list[dict]:
                 "name": name,
                 "description": spec["description"],
                 "system_prompt": spec["role_prompt"] + "\n\n" + scratch_instruction(name),
+                "model": model,
                 "permissions": scratch_permissions(name),
             }
         )
@@ -139,7 +141,7 @@ result = agent.invoke(
     {"messages": [{"role": "user", "content": USER_REQUEST}]},
     config={"recursion_limit": 50},
 )
-print(result["messages"][-1].content)
+print_content(model, result["messages"][-1])
 
 files = result.get("files", {})
 print("\n--- Scratch folder isolation check ---")
