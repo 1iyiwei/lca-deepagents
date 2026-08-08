@@ -4,6 +4,7 @@ from deepagents.backends.utils import create_file_data
 from langgraph.store.memory import InMemoryStore
 
 from models import model
+from my_utils import print_content
 
 store = InMemoryStore()
 memory_path = "/memories/AGENTS.md"
@@ -64,7 +65,7 @@ result = agent.invoke(
     context=demo_context,
 )
 print("--- Question 1 ---")
-print(result["messages"][-1].content)
+print_content(model, result["messages"][-1])
 
 # Second invoke: agent writes to memory
 result2 = agent.invoke(
@@ -79,9 +80,8 @@ result2 = agent.invoke(
     context=demo_context,
 )
 print("\n--- Question 2 ---")
-print(result2["messages"][-1].content)
+print_content(model, result2["messages"][-1])
 
 print("\n--- AGENTS.md after write ---")
 stored_memory = store.get(namespace_from_context(demo_context), store_memory_path)
 print(stored_memory.value["content"])
-
