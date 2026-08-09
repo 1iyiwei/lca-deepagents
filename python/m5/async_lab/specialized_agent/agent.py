@@ -23,6 +23,7 @@ import pandas as pd
 from langchain_anthropic import ChatAnthropic
 from langchain_core.tools import tool
 
+from langchain.chat_models import init_chat_model
 from deepagents import create_deep_agent
 
 SALES = pd.DataFrame(
@@ -53,6 +54,7 @@ def analyze_sales(group_by: str = "region") -> str:
 
 
 model = ChatAnthropic(model="claude-haiku-4-5")
+model = init_chat_model("ollama:qwen2.5:7b") # local run to save tokens
 
 # langgraph.json points at this module-level variable: "./agent.py:graph"
 graph = create_deep_agent(model=model, tools=[analyze_sales])
